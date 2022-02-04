@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+<comment>매칭내역 관련 쿼리문</comment>
+
+	<entry key="selectMatchListCount">
+		SELECT COUNT(*) COUNT
+		FROM MATCHING
+		WHERE STATUS = 'Y'
+	</entry>
+
+	<entry key="selectMatchListAdmin">
+		SELECT *
+		FROM (
+		    SELECT ROWNUM RNUM, A.*
+		    FROM (
+		            SELECT MAT_NO, M.BOARD_NUM BNUM, M.MEM_ID OID, M2.MEM_ID PID, M.LOCATION LOC, REQ_DATE, CARE_SDATE, CARE_EDATE, M.ADDRESS ADDR, P.PET_NAME PET, P.PET_TYPE TYPE, IS_END, M.STATUS STATUS 
+		            FROM MATCHING M
+		            JOIN MYPET P ON (M.PET_NUM = P.PET_NUM)
+		            JOIN PETOWNER O ON (P.PO_NUM = O.PO_NUM)
+		            JOIN PETSITTER S ON (M.PS_NUM = S.PS_NUM)
+		            JOIN MEMBER M ON (O.MEM_NUM = M.MEM_NUM)
+		            JOIN MEMBER M2 ON (S.MEM_NUM = M2.MEM_NUM)
+		            JOIN PS_BOARD B ON (B.BOARD_NUM = M.BOARD_NUM)
+		            WHERE M.STATUS = 'Y'
+		            ORDER BY REQ_DATE DESC) A)
+		WHERE RNUM BETWEEN ? AND ?
+	</entry>
+
+	<entry key="selectMatchAdmin">
+		SELECT MAT_NO, B.BOARD_NUM BNUM, M.MEM_ID OID, M2.MEM_ID PID, M.LOCATION LOC, REQ_DATE, CARE_SDATE, CARE_EDATE, M.ADDRESS ADDR, P.PET_NAME PET, P.PET_TYPE TYPE, IS_END
+		            FROM MATCHING M
+		            JOIN MYPET P ON (M.PET_NUM = P.PET_NUM)
+		            JOIN PETOWNER O ON (P.PO_NUM = O.PO_NUM)
+		            JOIN PETSITTER S ON (M.PS_NUM = S.PS_NUM)
+		            JOIN MEMBER M ON (O.MEM_NUM = M.MEM_NUM)
+		            JOIN MEMBER M2 ON (S.MEM_NUM = M2.MEM_NUM)
+		            JOIN PS_BOARD B ON (B.BOARD_NUM = M.BOARD_NUM)
+		            WHERE M.STATUS = 'Y' AND MAT_NO = ?
+	</entry>
+	
+	<entry key="selectMatchList">
+		SELECT *
+		FROM (
+		    SELECT ROWNUM RNUM, A.*
+		    FROM (
+		            SELECT MAT_NO, M.BOARD_NUM BNUM, M.MEM_ID OID, M2.MEM_ID PID, M.LOCATION LOC, REQ_DATE, CARE_SDATE, CARE_EDATE, M.ADDRESS ADDR, P.PET_NAME PET, P.PET_TYPE TYPE, IS_END, M.STATUS STATUS 
+		            FROM MATCHING M
+		            JOIN MYPET P ON (M.PET_NUM = P.PET_NUM)
+		            JOIN PETOWNER O ON (P.PO_NUM = O.PO_NUM)
+		            JOIN PETSITTER S ON (M.PS_NUM = S.PS_NUM)
+		            JOIN MEMBER M ON (O.MEM_NUM = M.MEM_NUM)
+		            JOIN MEMBER M2 ON (S.MEM_NUM = M2.MEM_NUM)
+		            JOIN PS_BOARD B ON (B.BOARD_NUM = M.BOARD_NUM)
+		            WHERE M.STATUS = 'Y' AND (M.MEM_NUM = ? OR M2.MEM_NUM = ?)
+		            ORDER BY REQ_DATE DESC) A)
+		            
+		WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	
+	<entry key="selectMatch">
+		SELECT MAT_NO, B.BOARD_NUM BNUM, M.MEM_ID OID, M2.MEM_ID PID, M.LOCATION LOC, REQ_DATE, CARE_SDATE, CARE_EDATE, M.ADDRESS ADDR, P.PET_NAME PET, P.PET_TYPE TYPE, IS_END, M.STATUS STATUS
+		            FROM MATCHING M
+		            JOIN MYPET P ON (M.PET_NUM = P.PET_NUM)
+		            JOIN PETOWNER O ON (P.PO_NUM = O.PO_NUM)
+		            JOIN PETSITTER S ON (M.PS_NUM = S.PS_NUM)
+		            JOIN MEMBER M ON (O.MEM_NUM = M.MEM_NUM)
+		            JOIN MEMBER M2 ON (S.MEM_NUM = M2.MEM_NUM)
+		            JOIN PS_BOARD B ON (B.BOARD_NUM = M.BOARD_NUM)
+		            WHERE M.STATUS = 'Y' AND MAT_NO = ?
+	</entry>
+	
+	<entry key="deleteMatch"> 
+		UPDATE MATCHING
+		   SET STATUS = 'N'
+		 WHERE MAT_NO = ?
+	</entry>
+<entry key = "matchSearchList">
+	SELECT *
+	FROM (
+	        SELECT ROWNUM RNUM, A.*
+	        FROM (
+	              SELECT *
+	              FROM(
+	                    SELECT MAT_NO, M.BOARD_NUM BNUM, M.MEM_ID OID, M2.MEM_ID PID, M.LOCATION LOC, REQ_DATE, CARE_SDATE, CARE_EDATE, M.ADDRESS ADDR, P.PET_NAME PET, P.PET_TYPE TYPE, IS_END, M.STATUS STATUS
+			            FROM MATCHING M
+			            JOIN MYPET P ON (M.PET_NUM = P.PET_NUM)
+			            JOIN PETOWNER O ON (P.PO_NUM = O.PO_NUM)
+			            JOIN PETSITTER S ON (M.PS_NUM = S.PS_NUM)
+			            JOIN MEMBER M ON (O.MEM_NUM = M.MEM_NUM)
+			            JOIN MEMBER M2 ON (S.MEM_NUM = M2.MEM_NUM)
+			            JOIN PS_BOARD B ON (B.BOARD_NUM = M.BOARD_NUM)
+			            WHERE M.STATUS = 'Y'
+			            AND (M.MEM_NUM = ? OR M2.MEM_NUM = ?))
+	          WHERE LOC = ?
+	          AND CARE_SDATE>=TO_DATE(?,'YY/MM/DD')
+	          AND CARE_EDATE<![CDATA[<=]]>TO_CHAR(?+1,'YY/MM/DD')
+	          AND (OID = ?OR PID = ?)
+	        ORDER BY REQ_DATE DESC) A)
+	    WHERE RNUM BETWEEN ? AND ?
+		
+	</entry>
+	
+	<entry key="matchSearchLsitCount">
+		SELECT COUNT(*) COUNT
+		FROM (
+		        SELECT ROWNUM RNUM, A.*
+		        FROM (
+		              SELECT *
+		              FROM(
+		                    SELECT MAT_NO, M.BOARD_NUM BNUM, M.MEM_ID OID, M2.MEM_ID PID, M.LOCATION LOC, REQ_DATE, CARE_SDATE, CARE_EDATE, M.ADDRESS ADDR, P.PET_NAME PET, P.PET_TYPE TYPE, IS_END, M.STATUS STATUS
+				            FROM MATCHING M
+				            JOIN MYPET P ON (M.PET_NUM = P.PET_NUM)
+				            JOIN PETOWNER O ON (P.PO_NUM = O.PO_NUM)
+				            JOIN PETSITTER S ON (M.PS_NUM = S.PS_NUM)
+				            JOIN MEMBER M ON (O.MEM_NUM = M.MEM_NUM)
+				            JOIN MEMBER M2 ON (S.MEM_NUM = M2.MEM_NUM)
+				            JOIN PS_BOARD B ON (B.BOARD_NUM = M.BOARD_NUM)
+				            WHERE M.STATUS = 'Y'
+				            AND (M.MEM_NUM = ? OR M2.MEM_NUM = ?))
+		          WHERE LOC = ?
+		          AND CARE_SDATE>=TO_DATE(?,'YY/MM/DD')
+		          AND CARE_EDATE<![CDATA[<=]]>TO_CHAR(?+1,'YY/MM/DD')
+		          AND (OID = ?OR PID = ?)
+		        ORDER BY REQ_DATE DESC) A)
+	</entry>
+	
+	<entry key = "matchAdminSearchLsitCount">
+		SELECT COUNT(*) COUNT
+			FROM (  SELECT MAT_NO, M.BOARD_NUM BNUM, M1.MEM_ID OID, M2.MEM_ID PID, M.LOCATION LOC, REQ_DATE, CARE_SDATE, CARE_EDATE, M.ADDRESS ADDR, P.PET_NAME PET, P.PET_TYPE TYPE, IS_END, M.STATUS STATUS
+		            FROM MATCHING M
+		            JOIN MYPET P ON (M.PET_NUM = P.PET_NUM)
+		            JOIN PETOWNER O ON (P.PO_NUM = O.PO_NUM)
+		            JOIN PETSITTER S ON (M.PS_NUM = S.PS_NUM)
+		            JOIN MEMBER M1 ON (O.MEM_NUM = M1.MEM_NUM)
+		            JOIN MEMBER M2 ON (S.MEM_NUM = M2.MEM_NUM)
+		            JOIN PS_BOARD B ON (B.BOARD_NUM = M.BOARD_NUM)
+	                WHERE M.STATUS = 'Y'
+	                  AND M.LOCATION = ?
+	                  AND M.CARE_SDATE>=TO_DATE(?,'YY/MM/DD')
+	                  AND M.CARE_EDATE<![CDATA[<=]]>TO_CHAR(?+1,'YY/MM/DD')
+	                  AND (M1.MEM_ID = ? OR M2.MEM_ID = ?))
+	</entry>
+	
+	<entry key="matchAdminSearchList">
+	SELECT *
+       FROM	(SELECT ROWNUM RNUM, A.*
+		    FROM (
+		           SELECT MAT_NO, M.BOARD_NUM BNUM, M1.MEM_ID OID, M2.MEM_ID PID, M.LOCATION LOC, REQ_DATE, CARE_SDATE, CARE_EDATE, M.ADDRESS ADDR, P.PET_NAME PET, P.PET_TYPE TYPE, IS_END, M.STATUS STATUS
+		            FROM MATCHING M
+		            JOIN MYPET P ON (M.PET_NUM = P.PET_NUM)
+		            JOIN PETOWNER O ON (P.PO_NUM = O.PO_NUM)
+		            JOIN PETSITTER S ON (M.PS_NUM = S.PS_NUM)
+		            JOIN MEMBER M1 ON (O.MEM_NUM = M1.MEM_NUM)
+		            JOIN MEMBER M2 ON (S.MEM_NUM = M2.MEM_NUM)
+		            JOIN PS_BOARD B ON (B.BOARD_NUM = M.BOARD_NUM)
+	                WHERE M.STATUS = 'Y'
+	                  AND M.LOCATION = ?
+	                  AND M.CARE_SDATE>=TO_DATE(?,'YY/MM/DD')
+	                  AND M.CARE_EDATE<![CDATA[<=]]>TO_CHAR(?+1,'YY/MM/DD')
+	                  AND (M1.MEM_ID = ? OR M2.MEM_ID = ?)
+		            ORDER BY REQ_DATE DESC) A)
+              WHERE RNUM BETWEEN ? AND ?
+	</entry>
+	
+	<entry key="updateIsEnd">
+		UPDATE (SELECT MEM.MEM_ID PID, MEM2.MEM_ID OID, M.IS_END MIE, M.CARE_EDATE EDATE
+            FROM MATCHING M
+            JOIN MYPET MP ON (MP.PET_NUM = M.PET_NUM)
+            JOIN PETOWNER PO ON (PO.PO_NUM = MP.PO_NUM)
+            JOIN PETSITTER PS ON (PS.PS_NUM = M.PS_NUM)
+            JOIN MEMBER MEM ON (PO.MEM_NUM = MEM.MEM_NUM)
+            JOIN MEMBER MEM2 ON (PS.MEM_NUM = MEM2.MEM_NUM)
+            )
+        SET MIE = 'Y'
+		WHERE ((PID = ? OR OID = ?) OR (? = ?)) AND (EDATE &lt; SYSDATE)
+	</entry>
+</properties>

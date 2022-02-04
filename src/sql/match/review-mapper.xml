@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+<comment>리뷰 관련 쿼리문</comment>
+
+	<entry key="insertReview">
+		INSERT INTO REVIEW(REVIEW_NUM, REVIEW_WRITER, BOARD_NUM, REVIEW_CONTENT)
+		VALUES ('REV' || SEQ_REVNO.NEXTVAL, ?, ?, ?)
+	</entry>
+
+	<entry key="selectReview">
+		SELECT REVIEW_NUM, REVIEW_WRITER, R.BOARD_NUM BOARDNUM, REVIEW_DATE, REVIEW_CONTENT, R.STATUS STATUS
+		FROM REVIEW R
+		JOIN PS_BOARD B ON (B.BOARD_NUM = R.BOARD_NUM)
+		JOIN MATCHING M ON (M.BOARD_NUM = B.BOARD_NUM)
+        JOIN MYPET P ON (P.PET_NUM = M.PET_NUM)
+        JOIN PETOWNER PO ON (R.REVIEW_WRITER = PO.PO_NUM)
+		WHERE PO.MEM_NUM = ? AND MAT_NO = ? AND R.STATUS = 'Y'
+	</entry>
+	
+	<entry key="deleteReview"> 
+		UPDATE REVIEW
+		SET STATUS = 'N'
+		WHERE REVIEW_NUM = ?
+	</entry>
+	<entry key="selectReviewList"> 
+		SELECT REVIEW_NUM, REVIEW_WRITER, BOARD_NUM, REVIEW_DATE, REVIEW_CONTENT, MEM_NAME, R.STATUS
+		FROM REVIEW R
+        JOIN PETOWNER P ON (R.REVIEW_WRITER = P.PO_NUM)
+        JOIN MEMBER USING(MEM_NUM)
+		WHERE BOARD_NUM = ?
+	 	AND R.STATUS = 'Y'
+	</entry>
+	
+	<entry key="selectReviewAdmin">
+	 	SELECT REVIEW_NUM, REVIEW_WRITER, R.BOARD_NUM BOARDNUM, REVIEW_DATE, REVIEW_CONTENT, R.STATUS STATUS
+	 	FROM REVIEW R
+	 	JOIN PS_BOARD B ON (B.BOARD_NUM = R.BOARD_NUM)
+		JOIN MATCHING M ON (M.BOARD_NUM = B.BOARD_NUM)
+	 	WHERE REVIEW_WRITER = ? AND M.MAT_NO = ? AND R.STATUS = 'Y'
+	</entry>
+
+</properties>

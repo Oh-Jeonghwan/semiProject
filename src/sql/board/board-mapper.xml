@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+<comment>보드 관련 쿼리문</comment>
+
+<entry key="insertBoard"> 
+	INSERT INTO PS_BOARD(BOARD_NUM, PS_NUM, PS_EXP, PS_PET, PS_KID, PS_SMOKE, PET_CAP, PRICE, PS_TITLE, PS_DES, CONDITION)
+	VALUES('BO'|| SEQ_BNO.NEXTVAL, ?, ?, ?, ?, ?,?,?,?,?,?)
+</entry>
+
+<entry key="insertAttachmnet"> 
+	INSERT INTO ATTACHMENT(FILE_NO, REF_BNO, ORIGIN_NAME, CHANGE_NAME, FILE_PATH, FILE_LEVEL)
+	VALUES('AT' || SEQ_ATNO.NEXTVAL, 'BO'||SEQ_BNO.CURRVAL, ?,?,?,?)
+</entry>
+
+<entry key="insertPetsitter"> 
+	INSERT INTO PETSITTER
+	VALUES('PS' || SEQ_PSNO.NEXTVAL, ?)
+</entry>
+
+<entry key="selectBoardList">
+	SELECT BOARD_NUM, PS_NUM, PS_EXP, PS_PET, PS_KID, PS_SMOKE, PET_CAP, PRICE, PS_TITLE, 
+	     PS_DES, CONDITION, B.STATUS, MEM_NAME, LOCATION, ADDRESS, FILE_PATH || CHANGE_NAME "MAINIMG"
+	FROM PS_BOARD B
+	JOIN PETSITTER P
+	USING(PS_NUM) 
+	JOIN MEMBER M
+	USING(MEM_NUM)
+	JOIN ATTACHMENT A ON (B.BOARD_NUM = A.REF_BNO)
+	WHERE B.STATUS= 'Y'
+	AND A.FILE_LEVEL = 1
+</entry>
+
+
+<entry key="selectBoard">
+	SELECT BOARD_NUM, PS_NUM, PS_EXP, PS_PET, PS_KID, PS_SMOKE, PET_CAP, PRICE, PS_TITLE, 
+	     PS_DES, CONDITION, B.STATUS, MEM_NAME, LOCATION, ADDRESS
+	FROM PS_BOARD B
+	JOIN PETSITTER P
+	USING(PS_NUM) 
+	JOIN MEMBER M
+	USING(MEM_NUM)
+	WHERE B.STATUS= 'Y'
+	AND BOARD_NUM = ?
+</entry>
+
+<entry key="selectAttachmentList">
+	SELECT * 
+	FROM ATTACHMENT
+	WHERE STATUS = 'Y'
+	AND REF_BNO = ?
+</entry>
+
+
+<entry key="updateBoard">
+
+	UPDATE PS_BOARD
+	SET PS_EXP = ?
+	  ,	PS_PET = ? 
+	  ,	PS_KID = ?
+	  ,	PS_SMOKE = ?
+	  ,	PET_CAP = ?   
+	  ,	PRICE = ?  
+ 	  ,	PS_TITLE = ?
+      ,	PS_DES = ?
+ 	  ,	CONDITION = ?
+	WHERE BOARD_NUM = ?
+		AND STATUS = 'Y'
+</entry>
+<entry key="updateAttachment">
+	UPDATE ATTACHMENT
+	SET ORIGIN_NAME =?
+      ,	CHANGE_NAME = ?
+      , FILE_PATH = ?
+      , UPLOAD_DATE = SYSDATE
+     WHERE FILE_NO = ?
+     AND STATUS= 'Y'
+</entry>
+<entry key="insertNewAttachment">
+	INSERT INTO ATTACHMENT(FILE_NO, REF_BNO, ORIGIN_NAME, CHANGE_NAME, FILE_PATH )
+	VALUES('AT' || SEQ_ATNO.NEXTVAL, ?, ?,?,?)		
+
+</entry>
+<entry key="deleteBoard">
+	UPDATE PS_BOARD
+	SET STATUS = 'N'
+	WHERE BOARD_NUM = ?
+
+</entry>
+<entry key="deletePetsitter">
+	DELETE FROM PETSITTER
+	WHERE PS_NUM = ?
+</entry>
+<entry key="selectSearchedList">
+	SELECT  BOARD_NUM, PS_NUM, PS_EXP, PS_PET, PS_KID, PS_SMOKE, PET_CAP, PRICE, PS_TITLE, 
+	        PS_DES, CONDITION, B.STATUS, MEM_NAME, LOCATION, ADDRESS, FILE_PATH || CHANGE_NAME "MAINIMG"
+	FROM PS_BOARD B
+	JOIN PETSITTER P
+	USING(PS_NUM) 
+	JOIN MEMBER M
+	USING(MEM_NUM)
+	JOIN ATTACHMENT A ON (B.BOARD_NUM = A.REF_BNO)
+	WHERE B.STATUS= 'Y'
+	AND LOCATION = ? 
+	AND PRICE BETWEEN ? AND ?
+	AND A.FILE_LEVEL = 1
+</entry>
+<entry key="selectListCount">
+		SELECT COUNT(*) COUNT
+		FROM PS_BOARD
+		WHERE STATUS = 'Y'
+</entry>
+<entry key="selectList">
+	SELECT *
+	  FROM(        
+	        SELECT ROWNUM RNUM, S.*
+	        FROM (
+	                SELECT  BOARD_NUM, PS_NUM, PS_EXP, PS_PET, PS_KID, PS_SMOKE, PET_CAP, PRICE, PS_TITLE, 
+	    					 PS_DES, CONDITION, B.STATUS, MEM_NAME, LOCATION, ADDRESS, FILE_PATH || CHANGE_NAME "MAINIMG"
+	               	FROM PS_BOARD B
+					JOIN PETSITTER P
+					USING(PS_NUM) 
+					JOIN MEMBER M
+					USING(MEM_NUM)
+					JOIN ATTACHMENT A ON (B.BOARD_NUM = A.REF_BNO)
+					WHERE B.STATUS= 'Y'
+					AND A.FILE_LEVEL = 1
+					ORDER BY BOARD_NUM DESC ) S)
+	  WHERE RNUM BETWEEN ? AND ?
+</entry>
+
+</properties>

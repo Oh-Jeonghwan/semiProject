@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+
+<comment>신고내역 관리 쿼리문</comment>
+
+<entry key="adminReportSelect">
+
+ SELECT REPORT_NUM , M1.MEM_ID WRI , M2.MEM_ID MEM , REPORT_CONTENT , REPORT_DATE
+ FROM REPORT R
+ JOIN MEMBER M1 ON(R.REPORT_WRITER = M1.MEM_NUM)
+ JOIN MEMBER M2 ON(R.REPORT_MEM = M2.MEM_NUM)
+ 
+ </entry>
+
+</properties>
+

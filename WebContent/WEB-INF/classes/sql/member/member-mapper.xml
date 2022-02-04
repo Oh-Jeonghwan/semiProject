@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+
+<comment>회원 관련 쿼리문</comment>
+
+<entry key="loginMember"> 
+	SELECT *
+	FROM MEMBER
+	WHERE MEM_ID = ?
+	AND MEM_PWD = ?
+	AND STATUS = 'Y' 
+</entry>
+
+<entry key="insertMember">
+	INSERT INTO MEMBER(MEM_NUM, MEM_ID,MEM_PWD,MEM_NAME, ID_NUM, EMAIL, PHONE, LOCATION, ADDRESS)
+	VALUES('ME'||SEQ_MNO.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, ?)
+</entry>
+
+<entry key="insertMatching">
+	INSERT INTO MATCHING(MAT_NO, BOARD_NUM, PS_NUM, PET_NUM, LOCATION, ADDRESS, REQ_DATE, CARE_SDATE, CARE_EDATE)
+	VALUES('MA'|| SEQ_MANO.NEXTVAL, ?, ?, ?, ?, ?,SYSDATE,?,?)
+</entry>
+
+<entry key="selectPetsitter">
+	SELECT * 
+	FROM PETSITTER
+	WHERE MEM_NUM = ?
+</entry>
+<entry key="insertPetsitter">
+	INSERT INTO PETSITTER
+	VALUES('PS'|| SEQ_PSNO.NEXTVAL, ?)
+</entry>
+<entry key="selectMyPetMatchList">
+	SELECT PET_NUM, PET_NAME, PET_GENDER, PET_TYPE, PET_BIRTH, PET_WEIGHT, PET_DEC, PO_NUM, T.STATUS
+	        , MEM_NAME ,  FILE_PATH || CHANGE_NAME "MAINIMG"
+	FROM MYPET T
+	JOIN PETOWNER P USING(PO_NUM) 
+	JOIN MEMBER M ON(M.MEM_NUM = P.MEM_NUM )
+	JOIN MYPETATTACHMENT AT ON(T.PET_NUM = AT.REF_BNO)
+	WHERE PO_NUM = ?
+</entry>
+<entry key="selectPetsitterPetList">
+	SELECT PET_NUM, PS_NUM, MEM_NUM, PET_NAME, PET_GENDER, PET_TYPE, PET_BIRTH, PET_WEIGHT, PET_DEC, PO_NUM, T.STATUS
+	        , MEM_NAME ,  FILE_PATH || CHANGE_NAME "MAINIMG"
+	FROM MYPET T
+	JOIN PETOWNER P USING(PO_NUM) 
+	JOIN MEMBER M ON(M.MEM_NUM = P.MEM_NUM )
+    JOIN PETSITTER PS ON (PS.MEM_NUM = M.MEM_NUM)
+	JOIN MYPETATTACHMENT AT ON(T.PET_NUM = AT.REF_BNO)
+	WHERE PS_NUM = ?
+</entry>
+<entry key="updateMember">
+UPDATE MEMBER
+SET MEM_NAME = ?
+, ID_NUM = ?
+, EMAIL = ?
+, PHONE = ?
+, LOCATION = ?
+, ADDRESS = ?
+, UPDATE_DATE = SYSDATE
+WHERE MEM_ID = ?
+</entry>
+
+<entry key="selectMember">
+SELECT *
+FROM MEMBER
+WHERE MEM_ID = ?
+AND STATUS = 'Y' 
+</entry>
+
+<entry key="updatePwdMember">
+UPDATE MEMBER
+SET MEM_PWD = ?
+, UPDATE_DATE = SYSDATE
+WHERE MEM_ID = ?
+AND MEM_PWD = ? 
+</entry>
+
+<entry key="insertMypetBoard">
+INSERT INTO MYPET(PET_NUM, PET_NAME, PET_GENDER, PET_TYPE, PET_BIRTH, PET_WEIGHT, PET_DEC, PO_NUM)
+VALUES('PE' || SEQ_PETNO.NEXTVAL, ?, ?, ?, ?, ?, ?, ?)
+ </entry>
+
+<entry key="insertAttachmentList">
+INSERT INTO MYPETATTACHMENT(FILE_NO, REF_BNO, ORIGIN_NAME, CHANGE_NAME, FILE_PATH, FILE_LEVEL)
+VALUES('MAT' || SEQ_MATNO.NEXTVAL, 'PE' || SEQ_PETNO.CURRVAL, ?, ?, ?, ?)
+ </entry>
+
+<entry key="insertPetOwner">
+INSERT INTO PETOWNER(PO_NUM, MEM_NUM)
+VALUES('PO' || SEQ_PONO.NEXTVAL, ?) 
+</entry>
+
+<entry key="selectPetOwner">
+SELECT * 
+FROM PETOWNER
+WHERE MEM_NUM = ? 
+</entry>
+
+<entry key="selectMypetList">
+		SELECT PET_NAME, PET_GENDER, PET_TYPE, FILE_PATH || CHANGE_NAME "TITLEIMG", PET_NUM
+		FROM MYPET M 
+		JOIN MYPETATTACHMENT 
+		ON (PET_NUM = REF_BNO)
+		JOIN PETOWNER P 
+		ON (M.PO_NUM = P.PO_NUM)
+		WHERE M.STATUS = 'Y'
+		AND P.MEM_NUM = ?
+		AND FILE_LEVEL = 1
+</entry>
+
+<entry key="selectMypet">
+	SELECT PET_NAME, PET_GENDER, PET_TYPE, PET_BIRTH, PET_WEIGHT, PET_DEC, FILE_PATH || CHANGE_NAME "TITLEIMG", PET_NUM
+    FROM MYPET M
+	JOIN MYPETATTACHMENT ON (PET_NUM = REF_BNO)
+	JOIN PETOWNER P ON (M.PO_NUM = P.PO_NUM)
+	WHERE M.STATUS = 'Y'
+  	  AND FILE_LEVEL = 1
+      AND M.PET_NUM = ?
+</entry>
+
+<entry key="updateMypetY">
+    UPDATE MEMBER
+    SET MYPET_YN = 'Y'
+    WHERE MEM_NUM = ?
+</entry>
+
+<entry key="deleteMyPet">
+	UPDATE MYPET
+	   SET STATUS = 'N'
+	 WHERE PET_NUM = ?
+</entry>
+
+<entry key="selectMyPetImg">
+	SELECT PET_NUM, PET_NAME, PET_GENDER, PET_TYPE, PET_BIRTH, PET_WEIGHT, PET_DEC, PO_NUM, FILE_PATH || CHANGE_NAME "TITLEIMG"
+	FROM MYPET M
+	JOIN MYPETATTACHMENT MPA ON (PET_NUM = REF_BNO)
+	WHERE PET_NAME = ? AND M.STATUS = 'Y' AND FILE_LEVEL = 1
+</entry>
+
+<entry key="changeMemIdPoNum">
+	SELECT PO_NUM, MEM_NUM
+	FROM PETOWNER
+	WHERE MEM_NUM = ?
+</entry>
+
+<entry key="insertReport">
+	INSERT INTO REPORT(REPORT_NUM, REPORT_WRITER, REPORT_MEM, REPORT_CONTENT)
+	VALUES('RE'||SEQ_RENO.NEXTVAL, ?, ?, ?)
+</entry>
+
+<entry key="updateReportCnt">
+	UPDATE MEMBER
+	SET REPORT_CNT = REPORT_CNT + 1
+	WHERE MEM_NUM = ?
+	
+</entry>
+<entry key="idCheck"> 
+	SELECT COUNT(*) 
+	FROM MEMBER 
+	WHERE MEM_ID =?
+</entry>
+
+
+<!-- 관리자 모드(정민). -->
+
+<entry key="adminUserSelect">
+SELECT *
+	FROM ( 
+	      SELECT ROWNUM RNUM, A.*
+	    	FROM ( SELECT MEM_NUM, MEM_ID, MEM_NAME, MEM_PWD, ID_NUM, LOCATION,ADDRESS, EMAIL,
+       				 MYPET_YN, PETSITTER_YN, ENROLL_DATE, PHONE, REPORT_CNT
+ 				FROM MEMBER 
+ 				WHERE STATUS= 'Y' ) A)
+WHERE RNUM BETWEEN ? AND ?
+ORDER BY ENROLL_DATE ASC
+
+
+
+ 
+ </entry>
+ 
+ <entry key="adminBlackListUserSelect">
+  SELECT MEM_NUM, MEM_ID, MEM_NAME, MEM_PWD, ID_NUM, LOCATION,ADDRESS, EMAIL,
+        MYPET_YN, PETSITTER_YN, ENROLL_DATE, PHONE, REPORT_CNT
+ FROM 	MEMBER
+ WHERE REPORT_CNT >= 3
+ ORDER BY MEM_NUM ASC
+ </entry>
+ 
+ <entry key="adminReportSelect">
+
+ SELECT REPORT_NUM , M1.MEM_ID WRI , M2.MEM_ID MEM , REPORT_CONTENT , REPORT_DATE
+ FROM REPORT R
+ JOIN MEMBER M1 ON(R.REPORT_WRITER = M1.MEM_NUM)
+ JOIN MEMBER M2 ON(R.REPORT_MEM = M2.MEM_NUM)
+ 
+ </entry>
+ 
+ 
+ <entry key="adminDeleteUser">
+ 
+ UPDATE MEMBER
+ SET STATUS = 'N'
+ WHERE MEM_NUM = ?
+ 
+ 
+ </entry>
+ 
+ <entry key="adminRestoreUser">
+    UPDATE MEMBER
+ 	SET STATUS = 'Y'
+ 	WHERE MEM_NUM = ?
+ </entry>
+ 
+ 
+ <entry key="staticSelect">
+ SELECT COUNT (*) COUNT
+ FROM MATCHING
+ WHERE STATUS= 'Y'
+ </entry>
+ 
+ 
+ <!--  지역 별 매칭 조회 -->
+ 
+ 
+ <entry key="astaticSelect">
+SELECT LOCATION, COUNT(*) COUNT 
+    FROM MATCHING
+    WHERE STATUS = 'Y'
+    GROUP BY LOCATION
+ </entry>
+ 
+ <entry key ="monthStaticSelect">
+ SELECT SUBSTR(CARE_SDATE,4,2) MONTH , COUNT(*) COUNT
+FROM MATCHING
+GROUP BY SUBSTR(CARE_SDATE,4,2)
+ </entry>
+ 
+ <entry key="adminSearch">
+ 
+SELECT MEM_NUM, MEM_ID, MEM_NAME, MEM_PWD, ID_NUM, LOCATION,ADDRESS, EMAIL,
+        MYPET_YN, PETSITTER_YN, ENROLL_DATE, PHONE, REPORT_CNT
+ FROM MEMBER 
+ WHERE STATUS= 'Y' 
+ 	AND MEM_ID = ?
+ 
+ </entry>
+ 
+ <entry key="AdminUserSelectListCount">
+ SELECT COUNT(*) COUNT
+	FROM ( 
+	    SELECT MEM_NUM, MEM_ID, MEM_NAME, MEM_PWD, ID_NUM, ADDRESS, EMAIL,
+        MYPET_YN, PETSITTER_YN, ENROLL_DATE, PHONE, REPORT_CNT
+ 		FROM MEMBER 
+ 		WHERE STATUS= 'Y')
+ </entry>
+ 
+ <entry key="memberStaticSelect">
+ SELECT LOCATION,COUNT(*) COUNT
+		FROM MEMBER 
+		WHERE STATUS = 'Y'
+		GROUP BY LOCATION
+ </entry>
+ 
+
+<entry key="selectJoinMem">
+	SELECT MEM_NUM, MEM_ID, MEM_NAME, EMAIL, PHONE
+	FROM MEMBER
+	WHERE MEM_ID = ?
+</entry>
+
+<entry key="petList">
+SELECT PET_TYPE , COUNT(*) COUNT
+FROM MYPET
+WHERE STATUS = 'Y'
+GROUP BY PET_TYPE
+</entry>
+
+<entry key="petsitterList">
+SELECT COUNT(*) COUNT
+FROM PETSITTER
+</entry>
+
+<entry key="updateMemberPetsitter">
+UPDATE MEMBER
+SET PETSITTER_YN = 'Y'
+WHERE MEM_NUM = ?
+</entry>
+
+
+
+</properties>
