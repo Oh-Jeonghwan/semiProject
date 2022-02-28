@@ -12,10 +12,12 @@ public class PageInfo {
 	private	int maxPage; //가장 마지막 페이지가 몇번 페이지인지 (= 총 페이지 갯수)
 	private int startPage; //페이지 하단에 보여질 페이징 바에 시작 수 
 	private int endPage; //페이지 하단에 보여질 페이징 바에 끝수
+	
 	public PageInfo() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	
 	public PageInfo(int listCount, int currentPage, int pageLimit, int boardLimit, int maxPage, int startPage,
 			int endPage) {
 		super();

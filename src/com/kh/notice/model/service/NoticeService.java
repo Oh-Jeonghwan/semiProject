@@ -7,6 +7,8 @@ import java.sql.Date;
 import com.kh.common.model.vo.PageInfo;
 import com.kh.notice.model.dao.NoticeDao;
 import com.kh.notice.model.vo.Notice;
+import com.kh.notice.model.vo.NoticeSearch;
+
 import static com.kh.common.JDBCTemplate.*;
 public class NoticeService {
 

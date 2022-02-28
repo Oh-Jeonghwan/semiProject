@@ -14,6 +14,7 @@ import com.kh.common.DateParse;
 import com.kh.common.model.vo.PageInfo;
 import com.kh.notice.model.service.NoticeService;
 import com.kh.notice.model.vo.Notice;
+import com.kh.notice.model.vo.NoticeSearch;
 
 /**
  * Servlet implementation class NoticeSearch
@@ -166,9 +167,10 @@ public class NoticeSearchController extends HttpServlet {
 		
 	 //4) 서비스단으로 토스
 		ArrayList<Notice> list = new NoticeService().noticeSearch(date1, date2, keyword,pi);
+		
+		
+		
 	//5) 출력
-		
-		
 		if(list.isEmpty()) {
 			request.getSession().setAttribute("alertMsg","조회하신 정보가 없습니다.");
 			response.sendRedirect(request.getContextPath()+"/list.no?currentPage=1");
@@ -176,11 +178,11 @@ public class NoticeSearchController extends HttpServlet {
 		else {
 			String date3 = String.valueOf(date2);
 			request.setAttribute("noStartDate", date1);
-			request.setAttribute("noEndDate", date3);
+			request.setAttribute("noEndtDate", date3);
 			request.setAttribute("keyword", keyword);
 			request.setAttribute("pi", pi);
-			request.setAttribute("list", list);
-			request.getRequestDispatcher("/views/notice/noticeSearch.jsp").forward(request, response);
+			request.setAttribute("list1", list);
+			request.getRequestDispatcher("/views/notice/noticeList.jsp").forward(request, response);
 		}
 		
 	}

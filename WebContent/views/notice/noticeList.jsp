@@ -60,7 +60,7 @@
       <br />
       <div align="center">
         <form action="<%=contextPath %>/search.no" method="post">
-          <input type="hidden" name="currentPage" value="1"  />
+          <input type="hidden" name="currentPage" value="1"/>
           <input type="date" name="noStartDate" required /> ~
           <input type="date" name="noEndDate" required /> 제목
           <input type="text" name="keyword" required />
@@ -112,37 +112,68 @@
       <!-- ------------------------페이징바 처리 ---------------------------------- -->
       <div class="paging-area" align="center">
         <%if(currentPage != 1){ %>
-        <button
-          onclick="location.href='<%=contextPath%>/list.no?currentPage=<%=currentPage-1%>'"
-        >
-          &lt;
-        </button>
-        <% }%> <%for(int i = startPage; i<=endPage; i++) {%> <%if(i !=
-        currentPage){ %>
-        <button
-          onclick="location.href='<%=contextPath%>/list.no?currentPage=<%=i%>'"
-        >
-          <%=i %>
-        </button>
-        <%} else{%>
-        <button disabled><%=i %></button>
-        <%}%> <%} %> <%if(currentPage != maxPage){ %>
-        <button
-          onclick="location.href='<%=contextPath%>/list.no?currentPage=<%=currentPage+1%>'"
-        >
-          &gt;
-        </button>
+	        <!-- 현재 페이지가  1이 아니라면 '<' 표시 -->
+	        <button id="prev" >&lt;</button>
+        <% }%> 
+        
+        <%for(int i = startPage; i<=endPage; i++) {%> 
+	        <%if(i !=currentPage){ %>
+	          <button class="number"><%=i %></button>
+	        <%} else{%>
+             <!-- 해당 페이지일 때 해당번호 disabled-->
+             <button disabled><%=i %></button>
+        	<%}%> 
+        <%} %> 
+        
+        <!-- 현재 페이지가 끝 페이지가 아니면 '>' 표시 -->
+        <%if(currentPage != maxPage){ %>
+        	<button id="next">&gt;</button>
         <%} %>
       </div>
+      
+      
       <script>
         //script 태그 내에서도 스크립틀릿과 같은 jsp 요소를 쓸 수 있다.
         $(function(){
+        	
         	$(".list-area>tbody>tr").click(function(){
         		var nno = $(this).children().eq(0).text();
+        		console.log(nno);
 
-        		location.href="<%=contextPath%>/detail.no?nno="+nno+"&currentPage="+<%=currentPage%>;
+        		location.href="/pet/detail.no?nno="+nno+"&currentPage="+<%=currentPage%>;
         	});
-        })
+        	
+        	$("#prev").click(function(){
+        		location.href="/pet/list.no?currentPage="+<%=currentPage-1%>;
+        	});
+        	
+        	//검색 조건이 없을 시 숫자 누를 시 이동 경로
+        	
+          
+          $(".number").click(function(){ 
+        	 var number = $(".number").text();
+        	 
+            for(var i=0; i<number.length; i++){
+              location.href="/pet/list.no?currentPage="+$(this).text();
+            }
+          });
+        	
+        	//검색 조건이 없을 시 > 누를 시 이동 경로
+        	$("#next").click(function(){
+            location.href="/pet/list.no?currentPage="+<%=currentPage+1%>;
+          });
+        	
+        	
+        	
+        	//검색 조건이 있을 때
+        	//검색 조건이 있을 시  <클릭 시 이동 경로
+        	
+        	
+        	//검색 조건이 있을 때 숫자 누를 시 이동경로
+        	
+        	
+        	//검색 조건이 있을 때 > 누를 시 이동경로
+       });
       </script>
     </div>
   </body>

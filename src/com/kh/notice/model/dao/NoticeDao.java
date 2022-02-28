@@ -13,6 +13,8 @@ import java.util.Properties;
 import com.kh.common.JDBCTemplate.*;
 import com.kh.common.model.vo.PageInfo;
 import com.kh.notice.model.vo.Notice;
+import com.kh.notice.model.vo.NoticeSearch;
+
 import static com.kh.common.JDBCTemplate.*;
 
 public class NoticeDao {
@@ -265,7 +267,7 @@ public class NoticeDao {
 			
 			while(rset.next()) {
 					
-				Notice n = new Notice(rset.getString("NOTICE_NUM")
+				NoticeSearch n = new NoticeSearch(rset.getString("NOTICE_NUM")
 									, rset.getString("NOTICE_TITLE")
 									, rset.getDate("NOTICE_DATE")
 									, rset.getString("MEM_ID")

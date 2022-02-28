@@ -7,6 +7,7 @@
 <%
 	ArrayList<Notice> list = (ArrayList<Notice>)request.getAttribute("list");
 	PageInfo pi = (PageInfo)request.getAttribute("pi");
+	
 	String noStartDate = (String)request.getAttribute("noStartDate");
 	String noEndDate = (String)request.getAttribute("noEndDate");
 	String keyword = (String)request.getAttribute("keyword");
